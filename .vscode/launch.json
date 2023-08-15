@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (Day 1)",
+            "name": "Day 1",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
@@ -16,7 +16,7 @@
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Launch (Day 2)",
+            "name": "Day 2",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
@@ -27,7 +27,7 @@
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Launch (Day 3)",
+            "name": "Day 3",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
