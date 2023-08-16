@@ -60,6 +60,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Day 6",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Day6/bin/Debug/net7.0/Day6.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Day6",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
