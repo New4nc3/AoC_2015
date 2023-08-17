@@ -76,7 +76,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Day7/bin/Debug/net7.0/Day7.dll",
-            "args": [],
+            "args": [ "input.txt" ],
             "cwd": "${workspaceFolder}/Day7",
             "console": "internalConsole",
             "stopAtEntry": false
