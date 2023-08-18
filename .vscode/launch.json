@@ -82,6 +82,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Day 8",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Day8/bin/Debug/net7.0/Day8.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Day8",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
