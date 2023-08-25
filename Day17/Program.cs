@@ -6,24 +6,30 @@ class Program
     {
         var inputFileName = args.Length == 0 ? "test.txt" : args[0];
         var storeAmount = inputFileName == "test.txt" ? 25 : 150;
+
         List<int> containers = File.ReadLines(inputFileName).Select(int.Parse).OrderByDescending(x => x).ToList();
+        var beforeLastIndex = containers.Count - 1;
+        var allCombinations = ProcessCombination(new List<int>(), 0, -1).ToList();
+        var part2 = allCombinations.GroupBy(x => x.Count).OrderBy(x => x.Key).First();
 
-        foreach (var combination in ProcessCombination(0, -1, 0))
-        {
-            Console.WriteLine(combination);
-        }
+        Console.WriteLine($"Part 1. All possible combinations to store exactly {storeAmount} liters: {allCombinations.Count}");
+        Console.WriteLine($"Part 2. There are {part2.Count()} different ways to use {part2.First().Count} containers to store {storeAmount} liters");
 
-        IEnumerable<int> ProcessCombination(int sum, int index, int depth)
+        IEnumerable<IList<int>> ProcessCombination(IList<int> current, int sum, int index)
         {
             if (index >= 0)
-                sum += containers[index];
+            {
+                var tempValue = containers[index];
+                current.Add(tempValue);
+                sum += tempValue;
+            }
 
             if (sum == storeAmount)
-                yield return depth;
+                yield return current;
             else if (sum < storeAmount)
-                for (int j = index; j < containers.Count - 1; ++j)
-                    foreach (var tempCombination in ProcessCombination(sum, j + 1, depth + 1))
-                        yield return tempCombination;
+                for (int i = index; i < beforeLastIndex; ++i)
+                    foreach (var combination in ProcessCombination(new List<int>(current), sum, i + 1))
+                        yield return combination;
         }
     }
 }
