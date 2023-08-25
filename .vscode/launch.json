@@ -181,6 +181,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Day 17",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Day17/bin/Debug/net7.0/Day17.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Day17",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
