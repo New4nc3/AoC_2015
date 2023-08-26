@@ -69,34 +69,16 @@ class Program
 
             int alive = 0;
 
-            if (i - 1 >= 0)
+            for (int k = i - 1; k <= i + 1; ++k)
             {
-                if (j - 1 >= 0 && currentState[i - 1, j - 1] == _lightChar)
-                    ++alive;
+                for (int l = j - 1; l <= j + 1; ++l)
+                {
+                    if (k == i && l == j)
+                        continue;
 
-                if (currentState[i - 1, j] == _lightChar)
-                    ++alive;
-
-                if (j + 1 < cols && currentState[i - 1, j + 1] == _lightChar)
-                    ++alive;
-            }
-
-            if (j - 1 >= 0 && currentState[i, j - 1] == _lightChar)
-                ++alive;
-
-            if (j + 1 < cols && currentState[i, j + 1] == _lightChar)
-                ++alive;
-
-            if (i + 1 < rows)
-            {
-                if (j - 1 >= 0 && currentState[i + 1, j - 1] == _lightChar)
-                    ++alive;
-
-                if (currentState[i + 1, j] == _lightChar)
-                    ++alive;
-
-                if (j + 1 < cols && currentState[i + 1, j + 1] == _lightChar)
-                    ++alive;
+                    if (k >= 0 && k < rows && l >= 0 && l < cols && currentState[k, l] == _lightChar)
+                        ++alive;
+                }
             }
 
             return currentState[i, j] switch
