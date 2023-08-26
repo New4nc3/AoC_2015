@@ -18,38 +18,55 @@ class Program
         var cols = data[0].Length;
         char[,] currentState = new char[rows, cols];
 
-        InitCurrentState();
-        //PrintState();
-
-        for (int simulation = 0; simulation < simulationsCount; ++simulation)
-        {
-            var nextState = new char[rows, cols];
-
-            for (int i = 0; i < rows; ++i)
-                for (int j = 0; j < cols; ++j)
-                    nextState[i, j] = ProcessCell(i, j);
-
-            currentState = nextState;
-            //PrintState();
-        }
-
+        ProcessSimulation(forPart2: false);
         Console.WriteLine($"Part 1. After {simulationsCount} simulations, total lights count is: {LightsOnCount()}");
 
-        void PrintState()
+        ProcessSimulation(forPart2: true);
+        Console.WriteLine($"Part 2. Now, after {simulationsCount} simulations, total lights count is: {LightsOnCount()}");
+
+        int LightsOnCount()
         {
+            int count = 0;
+
             for (int i = 0; i < rows; ++i)
-            {
                 for (int j = 0; j < cols; ++j)
-                    Console.Write(currentState[i, j]);
+                    if (currentState[i, j] == _lightChar)
+                        ++count;
 
-                Console.WriteLine();
-            }
-
-            Console.WriteLine();
+            return count;
         }
 
-        char ProcessCell(int i, int j)
+        void ProcessSimulation(bool forPart2)
         {
+            InitCurrentState(forPart2);
+
+            for (int simulation = 0; simulation < simulationsCount; ++simulation)
+            {
+                var nextState = new char[rows, cols];
+
+                for (int i = 0; i < rows; ++i)
+                    for (int j = 0; j < cols; ++j)
+                        nextState[i, j] = ProcessCell(i, j, forPart2);
+
+                currentState = nextState;
+            }
+        }
+
+        void InitCurrentState(bool forPart2)
+        {
+            for (int i = 0; i < rows; ++i)
+                for (int j = 0; j < cols; ++j)
+                    currentState[i, j] = data[i][j];
+
+            if (forPart2)
+                currentState[0, 0] = currentState[0, cols - 1] = currentState[rows - 1, 0] = currentState[rows - 1, cols - 1] = _lightChar;
+        }
+
+        char ProcessCell(int i, int j, bool forPart2 = false)
+        {
+            if (forPart2 && ((i == 0 && j == 0) || (i == 0 && j == cols - 1) || (i == rows - 1 && j == 0) || (i == rows - 1 && j == cols - 1)))
+                return _lightChar;
+
             int alive = 0;
 
             if (i - 1 >= 0)
@@ -88,25 +105,6 @@ class Program
                 _emptyChar => alive == 3 ? _lightChar : _emptyChar,
                 _ => throw new ArgumentException($"Unknown current state: \"{currentState[i, j]}\""),
             };
-        }
-
-        int LightsOnCount()
-        {
-            int count = 0;
-
-            for (int i = 0; i < rows; ++i)
-                for (int j = 0; j < cols; ++j)
-                    if (currentState[i, j] == _lightChar)
-                        ++count;
-
-            return count;
-        }
-
-        void InitCurrentState()
-        {
-            for (int i = 0; i < rows; ++i)
-                for (int j = 0; j < cols; ++j)
-                    currentState[i, j] = data[i][j];
         }
     }
 }
