@@ -26,7 +26,6 @@ class Program
         string molecule = streamReader.ReadLine() ?? throw new ArgumentException("Wrong input molecula format. Check \"test.txt\" for example");
         var distinctMolecules = new HashSet<string>();
         var cachedReplacementPositions = new Dictionary<string, List<int>>();
-        var cachedMolecule = molecule;
 
         foreach (var (Item, Replacement) in replacements)
         {
@@ -34,19 +33,7 @@ class Program
 
             if (!cachedReplacementPositions.TryGetValue(Item, out var positions))
             {
-                positions = new List<int>();
-
-                var tempReplacer = string.Empty;
-                for (int i = 0; i < nameLength; ++i)
-                    tempReplacer += _charToReplace;
-
-                int index;
-                while ((index = cachedMolecule.IndexOf(Item)) != -1)
-                {
-                    positions.Add(index);
-                    cachedMolecule = cachedMolecule.Remove(index, nameLength).Insert(index, tempReplacer);
-                }
-
+                positions = new List<int>(FindAllEntrances(Item, molecule));
                 cachedReplacementPositions.Add(Item, positions);
             }
 
@@ -58,6 +45,41 @@ class Program
             }
         }
 
+        var steps = 0;
+        var queueCandidates = new Queue<string>();
+        queueCandidates.Enqueue("e");
+
+        // todo - split molecule into elements and replace each one for each replacements (without duplicates)
+        // while (queueCandidates.Count > 0)
+        // {
+        //     string tempMolecule = queueCandidates.Dequeue();
+
+        //     if (tempMolecule == molecule)
+        //         break;
+
+        //     ++steps;
+        // }
+
         Console.WriteLine($"Part 1. Count of distinct molecules is: {distinctMolecules.Count}");
+        Console.WriteLine($"Part 2. From electron, molecule can be created in {steps} moves");
+    }
+
+    static IEnumerable<int> FindAllEntrances(string element, string molecula)
+    {
+        var positions = new List<int>();
+        var tempReplacer = new StringBuilder();
+        var nameLength = element.Length;
+
+        for (int i = 0; i < nameLength; ++i)
+            tempReplacer.Append(_charToReplace);
+
+        int index;
+        while ((index = molecula.IndexOf(element)) != -1)
+        {
+            positions.Add(index);
+            molecula = molecula.Remove(index, nameLength).Insert(index, tempReplacer.ToString());
+        }
+
+        return positions;
     }
 }
