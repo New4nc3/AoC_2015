@@ -1,8 +1,11 @@
-﻿namespace Day19;
+﻿using System.Text;
+
+namespace Day19;
 
 class Program
 {
     private const string _replacementDelimiter = " => ";
+    private const char _charToReplace = '#';
 
     static void Main(string[] args)
     {
@@ -23,24 +26,38 @@ class Program
         string molecule = streamReader.ReadLine() ?? throw new ArgumentException("Wrong input molecula format. Check \"test.txt\" for example");
         var distinctMolecules = new HashSet<string>();
         var cachedReplacementPositions = new Dictionary<string, List<int>>();
+        var cachedMolecule = molecule;
 
         foreach (var (Item, Replacement) in replacements)
         {
+            var nameLength = Item.Length;
+
             if (!cachedReplacementPositions.TryGetValue(Item, out var positions))
             {
                 positions = new List<int>();
-                var nameLength = Item.Length;
-                int index;
 
-                // while ((index = molecule.IndexOf(Item)) != -1)
-                // {
-                //     positions.Add(index);
-                //     molecule = molecule.Remove(index, nameLength);
-                //     molecule.Insert(index, Enumerable.Range()
-                // }
+                var tempReplacer = string.Empty;
+                for (int i = 0; i < nameLength; ++i)
+                    tempReplacer += _charToReplace;
+
+                int index;
+                while ((index = cachedMolecule.IndexOf(Item)) != -1)
+                {
+                    positions.Add(index);
+                    cachedMolecule = cachedMolecule.Remove(index, nameLength).Insert(index, tempReplacer);
+                }
+
+                cachedReplacementPositions.Add(Item, positions);
+            }
+
+            foreach (var position in positions)
+            {
+                var candidate = new StringBuilder(molecule);
+                candidate.Remove(position, nameLength).Insert(position, Replacement);
+                distinctMolecules.Add(candidate.ToString());
             }
         }
 
-        Console.WriteLine(replacements.Count);
+        Console.WriteLine($"Part 1. Count of distinct molecules is: {distinctMolecules.Count}");
     }
 }
