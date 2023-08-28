@@ -47,21 +47,51 @@ class Program
 
         var steps = 0;
         var queueCandidates = new Queue<string>();
+        var countToTakeCurrentStep = 1;
         queueCandidates.Enqueue("e");
 
-        // todo - split molecule into elements and replace each one for each replacements (without duplicates)
-        // while (queueCandidates.Count > 0)
-        // {
-        //     string tempMolecule = queueCandidates.Dequeue();
+        while (queueCandidates.Count > 0)
+        {
+            int countToProcessNextStep = 0;
 
-        //     if (tempMolecule == molecule)
-        //         break;
+            while (countToTakeCurrentStep > 0)
+            {
+                string tempMolecule = queueCandidates.Dequeue();
+                var tokens = SplitToTokens(tempMolecule);
+                var tokensCount = tokens.Count;
+                --countToTakeCurrentStep;
 
-        //     ++steps;
-        // }
+                for (var i = 0; i < tokensCount; ++i)
+                {
+                    foreach (var (Item, Replacement) in replacements.Where(x => x.Item == tokens[i]))
+                    {
+                        var tokenCandidates = new List<string>(tokens)
+                        {
+                            [i] = Replacement
+                        };
+
+                        var tempCandidate = string.Join(string.Empty, tokenCandidates);
+
+                        if (!queueCandidates.Contains(tempCandidate))
+                        {
+                            queueCandidates.Enqueue(tempCandidate);
+                            ++countToProcessNextStep;
+                        }
+                    }
+                }
+            }
+
+            countToTakeCurrentStep = countToProcessNextStep;
+            ++steps;
+
+            Console.WriteLine($"Steps processed: {steps}. Queue candidates count: {queueCandidates.Count}. To process next step: {countToTakeCurrentStep}");
+
+            if (queueCandidates.Contains(molecule))
+                break;
+        }
 
         Console.WriteLine($"Part 1. Count of distinct molecules is: {distinctMolecules.Count}");
-        Console.WriteLine($"Part 2. From electron, molecule can be created in {steps} moves");
+        Console.WriteLine($"Part 2. From electron, molecule can be created in {steps} steps");
     }
 
     static IEnumerable<int> FindAllEntrances(string element, string molecula)
@@ -81,5 +111,25 @@ class Program
         }
 
         return positions;
+    }
+
+    static List<string> SplitToTokens(string molecula)
+    {
+        var tokens = new List<string>();
+        var tempToken = string.Empty;
+
+        foreach (var character in molecula)
+        {
+            if (char.IsUpper(character) && !string.IsNullOrEmpty(tempToken))
+            {
+                tokens.Add(tempToken);
+                tempToken = string.Empty;
+            }
+
+            tempToken += character;
+        }
+
+        tokens.Add(tempToken);
+        return tokens;
     }
 }
