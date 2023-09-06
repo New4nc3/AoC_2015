@@ -5,6 +5,9 @@ namespace Day19;
 class Program
 {
     private const string _replacementDelimiter = " => ";
+    private const string _rn = "Rn";
+    private const string _ar = "Ar";
+    private const string _y = "Y";
     private const char _charToReplace = '#';
 
     static void Main(string[] args)
@@ -45,56 +48,19 @@ class Program
             }
         }
 
-        var steps = 0;
-        var queueCandidates = new Queue<string>();
-        var countToTakeCurrentStep = 1;
-        queueCandidates.Enqueue("e");
+        var allElements = SplitToTokens(molecule);
+        var rnArElements = allElements.Where(x => x == _rn || x == _ar).ToList();
+        var yElements = allElements.Where(x => x == _y).ToList();
+        var steps = allElements.Count - rnArElements.Count - 2 * yElements.Count - 1;
 
-        while (queueCandidates.Count > 0)
-        {
-            int countToProcessNextStep = 0;
-
-            while (countToTakeCurrentStep > 0)
-            {
-                string tempMolecule = queueCandidates.Dequeue();
-                var tokens = SplitToTokens(tempMolecule);
-                var tokensCount = tokens.Count;
-                --countToTakeCurrentStep;
-
-                for (var i = 0; i < tokensCount; ++i)
-                {
-                    foreach (var (Item, Replacement) in replacements.Where(x => x.Item == tokens[i]))
-                    {
-                        var tokenCandidates = new List<string>(tokens)
-                        {
-                            [i] = Replacement
-                        };
-
-                        var tempCandidate = string.Join(string.Empty, tokenCandidates);
-
-                        if (!queueCandidates.Contains(tempCandidate))
-                        {
-                            queueCandidates.Enqueue(tempCandidate);
-                            ++countToProcessNextStep;
-                        }
-                    }
-                }
-            }
-
-            countToTakeCurrentStep = countToProcessNextStep;
+        if (rnArElements.Count == 0 && yElements.Count == 0)
             ++steps;
-
-            Console.WriteLine($"Steps processed: {steps}. Queue candidates count: {queueCandidates.Count}. To process next step: {countToTakeCurrentStep}");
-
-            if (queueCandidates.Contains(molecule))
-                break;
-        }
 
         Console.WriteLine($"Part 1. Count of distinct molecules is: {distinctMolecules.Count}");
         Console.WriteLine($"Part 2. From electron, molecule can be created in {steps} steps");
     }
 
-    static IEnumerable<int> FindAllEntrances(string element, string molecula)
+    static List<int> FindAllEntrances(string element, string molecula)
     {
         var positions = new List<int>();
         var tempReplacer = new StringBuilder();
