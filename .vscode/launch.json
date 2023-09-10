@@ -225,6 +225,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Day 21",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Day21/bin/Debug/net7.0/Day21.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Day21",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
