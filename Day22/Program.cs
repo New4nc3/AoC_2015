@@ -20,9 +20,9 @@ class Program
         _bossDamage = int.Parse(data[1].Split(_statsDelimiter)[1]);
 
         if (inputFileName == "test.txt")
-            SimulateTurn(10, 250, 0, bossHP, 0, 0, 0, 0, new List<string>(), false, false);
+            SimulateTurn(10, 250, bossHP, 0, 0, 0, 0, new List<string>(), false, false);
         else
-            SimulateTurn(50, 500, 0, bossHP, 0, 0, 0, 0, new List<string>(), false, false);
+            SimulateTurn(50, 500, bossHP, 0, 0, 0, 0, new List<string>(), false, false);
 
         Console.WriteLine($"Part 1. Min mana spent: {_minManaSpent} \n{string.Join(", ", _castedSpells)}");
 
@@ -30,17 +30,19 @@ class Program
         _castedSpells = new();
 
         if (inputFileName == "test.txt")
-            SimulateTurn(10, 250, 0, bossHP, 0, 0, 0, 0, new List<string>(), true, false);
+            SimulateTurn(10, 250, bossHP, 0, 0, 0, 0, new List<string>(), true, false);
         else
-            SimulateTurn(50, 500, 0, bossHP, 0, 0, 0, 0, new List<string>(), true, false);
+            SimulateTurn(50, 500, bossHP, 0, 0, 0, 0, new List<string>(), true, false);
 
-        Console.WriteLine($"Part 2. {_minManaSpent} \n{string.Join(", ", _castedSpells)}");
+        if (_minManaSpent == int.MaxValue)
+            Console.WriteLine("\nPart 2. It is impossible to solve with current params. Player dies anyway . . .");
+        else
+            Console.WriteLine($"\nPart 2. Now, min mana spent is {_minManaSpent} \n{string.Join(", ", _castedSpells)}");
     }
 
     private static void SimulateTurn(
         int playerHP,
         int playerMana,
-        int playerArmor,
         int bossHP,
         int shieldDur,
         int poisonDur,
@@ -79,13 +81,13 @@ class Program
             playerMana += 101;
         }
 
+        var playerArmor = 0;
+
         if (shieldDur > 0)
         {
             --shieldDur;
             playerArmor = 7;
         }
-        else
-            playerArmor = 0;
 
         if (isBossTurn)
         {
@@ -95,7 +97,7 @@ class Program
                 return;
 
             var tempSpells = new List<string>(spells) { $"Boss deals {damageToDeal} damage ({playerHP - damageToDeal}; {playerArmor}; {playerMana}; {bossHP})" };
-            SimulateTurn(playerHP - damageToDeal, playerMana, playerArmor, bossHP, shieldDur, poisonDur, rechargeDur, totalManaSpent, tempSpells, isPart2, false);
+            SimulateTurn(playerHP - damageToDeal, playerMana, bossHP, shieldDur, poisonDur, rechargeDur, totalManaSpent, tempSpells, isPart2, false);
         }
         else
         {
@@ -114,7 +116,7 @@ class Program
                     return;
                 }
                 else
-                    SimulateTurn(playerHP, playerMana - 53, playerArmor, bossHP - 4, shieldDur, poisonDur, rechargeDur, totalManaSpent + 53, tempSpells, isPart2);
+                    SimulateTurn(playerHP, playerMana - 53, bossHP - 4, shieldDur, poisonDur, rechargeDur, totalManaSpent + 53, tempSpells, isPart2);
             }
 
             if (playerMana - 73 >= 0)
@@ -132,17 +134,17 @@ class Program
                     return;
                 }
                 else
-                    SimulateTurn(playerHP + 2, playerMana - 73, playerArmor, bossHP - 2, shieldDur, poisonDur, rechargeDur, totalManaSpent + 73, tempSpells, isPart2);
+                    SimulateTurn(playerHP + 2, playerMana - 73, bossHP - 2, shieldDur, poisonDur, rechargeDur, totalManaSpent + 73, tempSpells, isPart2);
             }
 
             if (shieldDur == 0 && playerMana - 113 >= 0)
-                SimulateTurn(playerHP, playerMana - 113, playerArmor, bossHP, 6, poisonDur, rechargeDur, totalManaSpent + 113, new List<string>(spells) { "Shield" }, isPart2);
+                SimulateTurn(playerHP, playerMana - 113, bossHP, 6, poisonDur, rechargeDur, totalManaSpent + 113, new List<string>(spells) { "Shield" }, isPart2);
 
             if (poisonDur == 0 && playerMana - 173 >= 0)
-                SimulateTurn(playerHP, playerMana - 173, playerArmor, bossHP, shieldDur, 6, rechargeDur, totalManaSpent + 173, new List<string>(spells) { "Poison" }, isPart2);
+                SimulateTurn(playerHP, playerMana - 173, bossHP, shieldDur, 6, rechargeDur, totalManaSpent + 173, new List<string>(spells) { "Poison" }, isPart2);
 
             if (rechargeDur == 0 && playerMana - 229 >= 0)
-                SimulateTurn(playerHP, playerMana - 229, playerArmor, bossHP, shieldDur, poisonDur, 5, totalManaSpent + 229, new List<string>(spells) { "Recharge" }, isPart2);
+                SimulateTurn(playerHP, playerMana - 229, bossHP, shieldDur, poisonDur, 5, totalManaSpent + 229, new List<string>(spells) { "Recharge" }, isPart2);
         }
     }
 }
