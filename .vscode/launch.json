@@ -247,6 +247,17 @@
             "stopAtEntry": false
         },
         {
+            "name": "Day 23",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Day23/bin/Debug/net7.0/Day23.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Day23",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
