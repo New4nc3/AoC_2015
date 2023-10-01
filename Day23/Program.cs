@@ -6,42 +6,42 @@ class Program
     {
         var inputFileName = args.Length == 0 ? "test.txt" : args[0];
         string[] rawCommands = File.ReadAllLines(inputFileName);
-        Dictionary<string, uint> registries = new Dictionary<string, uint>
-        {
-            { "a", 0 },
-            { "b", 0 },
-        };
-        //uint a = 0, b = 0;
-        int i = 0, length = rawCommands.Length;
 
-        while (i < length)
+        var parsedCommands = new List<BaseCommand>();
+        var registriesContainer = new RegistriesContainer();
+        var length = rawCommands.Length;
+
+        for (var i = 0; i < length; ++i)
         {
             var command = rawCommands[i];
 
             if (command.StartsWith("inc"))
-            {
-                var reg = command.Split(" ")[1];
-                ++registries[reg];
-                ++i;
-            }
+                parsedCommands.Add(new IncrementCommand(command, registriesContainer));
             else if (command.StartsWith("tpl"))
-            {
-                var reg = command.Split(" ")[1];
-                registries[reg] *= 3;
-                ++i;
-            }
+                parsedCommands.Add(new TripleCommand(command, registriesContainer));
             else if (command.StartsWith("hlf"))
-            {
-                var reg = command.Split(" ")[1];
-                registries[reg] /= 2;
-                ++i;
-            }
+                parsedCommands.Add(new HalfCommand(command, registriesContainer));
             else if (command.StartsWith("jmp"))
-            {
-                // to do 
-            }
+                parsedCommands.Add(new JumpCommand(command, registriesContainer));
+            else if (command.StartsWith("jie"))
+                parsedCommands.Add(new JumpIfEvenCommand(command, registriesContainer));
+            else if (command.StartsWith("jio"))
+                parsedCommands.Add(new JumpIfOneCommand(command, registriesContainer));
+            else
+                throw new ArgumentException($"Unknown command, check input data: \"{command}\"");
         }
 
-        Console.WriteLine($"Part 1. Value in b register is {registries["b"]}");
+        SimulateCommandsProcession();
+        Console.WriteLine($"Part 1. Value in b register is {registriesContainer.Registries["b"]}");
+
+        registriesContainer.ResetForPart2();
+        SimulateCommandsProcession();
+        Console.WriteLine($"Part 2. Now value in b register is {registriesContainer.Registries["b"]}");
+
+        void SimulateCommandsProcession()
+        {
+            while (registriesContainer.Iterator < length)
+                parsedCommands[registriesContainer.Iterator].Execute();
+        }        
     }
 }
