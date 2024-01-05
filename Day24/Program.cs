@@ -109,7 +109,7 @@ class Program
             {
                 TryInitArrangementRecursively(packages.Except(candidate).ToList(), desiredWeight, 0, new List<int>(), part1 ? temp1 : temp2);
             }
-            catch { }
+            catch(NotImplementedException) { }
 
             if (part1)
             {
@@ -125,8 +125,7 @@ class Program
                 if (temp2.Initialized && (bestArrangement2 == null || temp2.QE < bestArrangement2.QE))
                 {
                     bestArrangement2 = temp2;
-                    Console.WriteLine($"Part 2. Best arrangement to get {desiredWeight}: {bestArrangement2}");
-                    break;
+                    Console.WriteLine($"Part 2. Best arrangement to get {desiredWeight}: {bestArrangement2} Press [Ctrl + C] to stop");
                 }
             }
         }
