@@ -36,8 +36,13 @@ class ArrangementContainer
         return false;
     }
 
-    public override string ToString() =>
-        $"({string.Join(", ", First)}); ({string.Join(", ", Second)}); ({string.Join(", ", Third)}) with QE = {QE}";
+    public override string ToString()
+    {
+        var secondStr = Second == null ? "null" : string.Join(", ", Second);
+        var thirdStr = Third == null ? "null" : string.Join(", ", Third);
+
+        return $"QE = {QE}; ({string.Join(", ", First)}); ({secondStr}); ({thirdStr})";
+    }
 }
 
 class ArrangementContainer2 : ArrangementContainer
@@ -55,6 +60,12 @@ class ArrangementContainer2 : ArrangementContainer
         }
 
         return false;
+    }
+
+    public override string ToString()
+    {
+        var fourthStr = Fourth == null ? "null" : string.Join(", ", Fourth);
+        return base.ToString() + " " + fourthStr;
     }
 }
 
@@ -113,7 +124,7 @@ class Program
 
             if (part1)
             {
-                if (temp1.Initialized && (bestArrangement1 == null || temp1.QE < bestArrangement1.QE))
+                if (temp1 != null && temp1.Initialized && (bestArrangement1 == null || temp1.QE < bestArrangement1.QE))
                 {
                     bestArrangement1 = temp1;
                     Console.WriteLine($"Part 1. Best arrangement to get {desiredWeight}: {bestArrangement1}");
@@ -122,7 +133,7 @@ class Program
             }
             else
             {
-                if (temp2.Initialized && (bestArrangement2 == null || temp2.QE < bestArrangement2.QE))
+                if (temp2 != null && temp2.Initialized && (bestArrangement2 == null || temp2.QE < bestArrangement2.QE))
                 {
                     bestArrangement2 = temp2;
                     Console.WriteLine($"Part 2. Best arrangement to get {desiredWeight}: {bestArrangement2} Press [Ctrl + C] to stop");
@@ -164,9 +175,9 @@ class Program
         return true;
     }
 
-    static void TryInitArrangementRecursively(List<int> remainingPackages, int desiredWeight, int currentWeight, List<int> currentGroup, ArrangementContainer container)
+    static void TryInitArrangementRecursively(List<int> remainingPackages, int desiredWeight, int currentWeight, List<int> currentGroup, ArrangementContainer? container)
     {
-        if (currentWeight == desiredWeight && !container.Initialized && TryAddToUniqueGroups(currentGroup, _uniqueSubgroups))
+        if (currentWeight == desiredWeight && container != null && !container.Initialized && TryAddToUniqueGroups(currentGroup, _uniqueSubgroups))
         {
             container.TryInitGroup(currentGroup);
 
